@@ -19,7 +19,7 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
-library(palmerpenguins)
+
 ```
 
 
@@ -40,13 +40,24 @@ Some of our data is of penguins (@fig-bills), from @palmerpenguins.
 #| fig-cap: Bills of penguins
 #| echo: false
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
+cleaned_shelter_data <- read.csv("/Users/liz/Downloads/starter_folder-main/data/analysis_data/analysis_data.csv")
+
+# Ensure the date column is in the correct format (Month-Year format)
+cleaned_shelter_data$date <- as.Date(paste0("01-", cleaned_shelter_data$date), format="%d-%b-%y")
+
+# Filter to include only the "All Population" group
+total_population_data <- subset(cleaned_shelter_data, group == "All Population")
+
+# Load ggplot2 for plotting
+ggplot(total_population_data, aes(x = date, y = homeless_count)) +
+  geom_line(color = "blue", linewidth = 1.5) +  
+  labs(title = "Total Homeless Population Over Time",
+       x = "Date",
+       y = "Homeless Population Count") +
+  scale_x_date(date_labels = "%Y", date_breaks = "1 year") +  
   theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  
+
 ```
 
 Talk more about it.
