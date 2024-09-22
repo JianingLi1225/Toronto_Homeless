@@ -10,39 +10,35 @@
 #### Workspace setup ####
 library(tidyverse)
 
-#### Clean data ####
-#### Workspace setup ####
-library(tidyverse)
-
-# Read the data and remove unnecessary columns
+# Read the data
 cleaned_shelter_data <- read_csv("/Users/liz/Downloads/starter_folder-main/data/raw_data/shelter_raw_data.csv") %>%
-  select(-returned_from_housing, 
-         -returned_to_shelter, 
-         -newly_identified, 
-         -moved_to_housing, 
-         -became_inactive) %>%
   
-  # Rename the columns
+  # Filter data to keep only 'All Population' and 'Chronic' rows
+  filter(population_group %in% c('All Population', 'Chronic')) %>%
+  
+  # Remove unnecessary columns
+  select(-returned_from_housing, -returned_to_shelter, -newly_identified, 
+         -moved_to_housing, -became_inactive) %>%
+  
+  # Rename columns
   rename(
-    date = date.mmm.yy.,
-    group = population_group,
-    homeless_count = actively_homeless,
-    age_under_16 = ageunder16,
-    age_16_24 = age16.24,
-    age_25_34 = age25.34,
-    age_35_44 = age35.44,
-    age_45_54 = age45.54,
-    age_55_64 = age55.64,
-    age_65_over = age65over,
-    male_count = gender_male,
-    female_count = gender_female,
-    transgender_non_binary_count = gender_transgender.non.binary_or_two_spirit,
-    pop_group_pct = population_group_percentage
-  )
+    ID = X_id,
+    Date = date.mmm.yy.,
+    Population_Group = population_group,
+    Homeless_Count = actively_homeless,
+    Age_Under_16 = ageunder16,
+    Age_16_24 = age16.24,
+    Age_25_34 = age25.34,
+    Age_35_44 = age35.44,
+    Age_45_54 = age45.54,
+    Age_55_64 = age55.64,
+    Age_65_Over = age65over,
+    Male_Count = gender_male,
+    Female_Count = gender_female,
+    Transgender_Non_Binary_Count = gender_transgender.non.binary_or_two_spirit,
+    Population_Group_Percentage = population_group_percentage)
 
-# Preview the cleaned and renamed data
-head(cleaned_shelter_data)
 
 #### Save data ####
-write_csv(cleaned_shelter_data, "/Users/liz/Downloads/starter_folder-main/data/analysis_data/analysis_data.csv")
+write_csv(cleaned_shelter_data, "/Users/liz/Downloads/starter_folder-main/data/analysis_data/shelter_analysis_data.csv")
 
