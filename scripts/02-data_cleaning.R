@@ -11,34 +11,38 @@
 library(tidyverse)
 
 #### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
+#### Workspace setup ####
+library(tidyverse)
 
-cleaned_data <-
-  raw_data |>
-  janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
-  mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
-  ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
-         ) |> 
-  tidyr::drop_na()
+# Read the data and remove unnecessary columns
+cleaned_shelter_data <- read_csv("/Users/liz/Downloads/starter_folder-main/data/raw_data/shelter_raw_data.csv") %>%
+  select(-returned_from_housing, 
+         -returned_to_shelter, 
+         -newly_identified, 
+         -moved_to_housing, 
+         -became_inactive) %>%
+  
+  # Rename the columns
+  rename(
+    date = date.mmm.yy.,
+    group = population_group,
+    homeless_count = actively_homeless,
+    age_under_16 = ageunder16,
+    age_16_24 = age16.24,
+    age_25_34 = age25.34,
+    age_35_44 = age35.44,
+    age_45_54 = age45.54,
+    age_55_64 = age55.64,
+    age_65_over = age65over,
+    male_count = gender_male,
+    female_count = gender_female,
+    transgender_non_binary_count = gender_transgender.non.binary_or_two_spirit,
+    pop_group_pct = population_group_percentage
+  )
+
+# Preview the cleaned and renamed data
+head(cleaned_shelter_data)
 
 #### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+write_csv(cleaned_shelter_data, "/Users/liz/Downloads/starter_folder-main/data/analysis_data/analysis_data.csv")
+
