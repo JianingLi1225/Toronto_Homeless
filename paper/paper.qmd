@@ -2,7 +2,7 @@
 title: "My title"
 subtitle: "My subtitle if needed"
 author: 
-  - First author
+  - Jianing Li
   - Another author
 thanks: "Code and data are available at: LINK."
 date: today
@@ -36,13 +36,16 @@ The remainder of this paper is structured as follows. @sec-data....
 
 
 # Data {#sec-data}
-
+## Overview {#sec-data-overview}
 Some of our data is of penguins (@fig-bills), from @palmerpenguins.
 
+## Results {#sec-data-results}
+
 ```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
 #| echo: false
+#| warning: false
+#| label: fig-total-population
+#| fig-cap: "Trend of Homeless Population in Toronto from 2018 to 2024"
 
 cleaned_shelter_data <- read.csv("/Users/liz/Downloads/starter_folder-main/data/analysis_data/shelter_analysis_data.csv")
 
@@ -55,20 +58,21 @@ total_population_data <- subset(cleaned_shelter_data, Population_Group == "All P
 # Load ggplot2 for plotting
 ggplot(total_population_data, aes(x = Date, y = Homeless_Count)) +
   geom_line(color = "blue", linewidth = 1.5) +  # Adjust line color and width
-  labs(title = "Total Homeless Population Over Time",
-       x = "Date",
+  labs(x = "Date",
        y = "Homeless Population Count") +
-  scale_x_date(date_labels = "%Y", date_breaks = "1 year") +  # Show year on x-axis with 1-year intervals
+  scale_x_date(date_labels = "%Y", date_breaks = "1 year") +  
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))    
 
 ```
 
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
+@fig-total-population illustrates the fluctuation in Toronto's homeless population from 2018 to 2024. The chart shows cyclical rises and falls, with more pronounced declines around 2020 and 2021, followed by a steady recovery. The population reaches its highest point in 2024. Throughout this period, the homeless population varies between approximately 7,500 and 11,000 individuals.
 
 ```{r}
+#| echo: false
+#| warning: false
+#| label: fig-age-distribution
+#| fig-cap: "Age Group Distribution of Homeless Population in Toronto (2018-2024)"
 
 # Summarize data for all years (total homeless population by age group)
 total_data <- cleaned_shelter_data %>%
@@ -97,59 +101,20 @@ ggplot(total_data_long, aes(x = "", y = Count, fill = Age_Group)) +
   coord_polar("y") +
   geom_text(aes(label = paste0(Percent, "%")), 
             position = position_stack(vjust = 0.5), size = 4) +
-  labs(title = "Age Group Distribution of Total Homeless Population") +
   theme_void() +
   theme(legend.position = "right") +
   scale_fill_brewer(palette = "Set3")  # Use a color palette for clarity
 
 
 ```
+@fig-age-distribution shows the percentage of Toronto's homeless population in each age group as a proportion of the total homeless population from 2018 to 2024. The largest age group is 35-44 years old, accounting for about 21\% of the total population, followed by the 25-34 age group (approximately 18\%), the 45-54 age group (approximately 17\%), and the 55-64 age group (approximately 14\%). The under 16 and 16-24 age groups each account for 12\%. The smallest age group is 65 years and above, making up about 7\% of the total population. 
 
 ```{r}
-
-# Read the cleaned data
-cleaned_shelter_data <- read.csv("/Users/liz/Downloads/starter_folder-main/data/analysis_data/shelter_analysis_data.csv")
-
-# Ensure the date column is in the correct format
-cleaned_shelter_data$date <- as.Date(paste0("01-", cleaned_shelter_data$Date), format="%d-%b-%y")
-cleaned_shelter_data$year <- format(cleaned_shelter_data$date, "%Y")  # Extract year as a string
-
-# Summarize data by year for different age groups
-age_data <- cleaned_shelter_data %>%
-  group_by(year) %>%
-  summarise(Age_Under_16 = sum(Age_Under_16, na.rm = TRUE),
-            Age_16_24 = sum(Age_16_24, na.rm = TRUE),
-            Age_25_34 = sum(Age_25_34, na.rm = TRUE),
-            Age_35_44 = sum(Age_35_44, na.rm = TRUE),
-            Age_45_54 = sum(Age_45_54, na.rm = TRUE),
-            Age_55_64 = sum(Age_55_64, na.rm = TRUE),
-            Age_65_Over = sum(Age_65_Over, na.rm = TRUE))
-
-# Reshape data for plotting
-age_data_long <- pivot_longer(age_data, 
-                              cols = starts_with("Age"), 
-                              names_to = "Age_Group", 
-                              values_to = "Count")
-
-# Plot 100% stacked bar chart
-ggplot(age_data_long, aes(x = year, y = Count, fill = Age_Group)) +
-  geom_bar(stat = "identity", position = "fill") +  # Use 'fill' to normalize to 100%
-  scale_y_continuous(labels = percent) +  # Display percentages on y-axis
-  labs(title = "Age Group Proportion Over Time", 
-       x = "Year", y = "Proportion", fill = "Age Group") +
-  theme_minimal() +
-  scale_fill_brewer(palette = "Set3")  # Use color palette for clarity
-
-```
-
-```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
 #| echo: false
 #| warning: false
-#| message: false
-
-
+#| label: fig-gender-distribution
+#| fig-cap: "Homeless Population by Gender in Toronto (2018-2024)"
+#| 
 # Read the cleaned data
 cleaned_shelter_data <- read.csv("/Users/liz/Downloads/starter_folder-main/data/analysis_data/shelter_analysis_data.csv")
 
@@ -193,8 +158,7 @@ gender_data_long$Gender <- factor(gender_data_long$Gender, levels = c("Non_Binar
 # Plot area chart with percentages in the legend
 ggplot(gender_data_long, aes(x = year, y = Count, fill = Gender)) +
   geom_area(position = "stack") +
-  labs(title = "Homeless Population by Gender Over Time (Area Chart)", 
-       x = "Year", y = "Homeless Population Count", fill = "Gender") +
+  labs(x = "Year", y = "Homeless Population Count", fill = "Gender") +
   scale_fill_manual(values = c("Male" = "blue", "Female" = "pink", "Non_Binary" = "purple"),
                     labels = gender_percentages) +  # Add percentages to the legend
   theme_minimal()
@@ -202,9 +166,13 @@ ggplot(gender_data_long, aes(x = year, y = Count, fill = Gender)) +
 
 ```
 
-Talk way more about it. 
-```{r}
+@fig-gender-distribution presents the gender distribution of Toronto's homeless population from 2018 to 2024. During this period, males have consistently made up the largest proportion, accounting for approximately 61.8% of the total homeless population. Females make up about 36.8%, while non-binary individuals make up about 1.4%. Over time, the total homeless population of each gender has shown similar trends, meaning that the proportion of each gender has remained almost constant.
 
+```{r}
+#| echo: false
+#| warning: false
+#| label: fig-chronic-population
+#| fig-cap: "Comparison of Chronic vs Non-Chronic Homeless Population in Toronto (2019-2024)"
 
 # Summarize data by year for Chronic and All Population
 chronic_data <- cleaned_shelter_data %>%
@@ -236,8 +204,7 @@ combined_data <- combined_data %>%
 # Plot the stacked bar chart with Chronic at the top
 ggplot(combined_data, aes(x = year, y = homeless_count, fill = group)) +
   geom_bar(stat = "identity", position = "stack") +
-  labs(title = "Chronic vs Non-Chronic Homeless Population by Year", 
-       x = "Year", y = "Homeless Population Count", fill = "Group") +
+  labs(x = "Year", y = "Homeless Population Count", fill = "Group") +
   theme_minimal() +
   scale_fill_manual(values = c("Chronic" = "blue", "Non-Chronic" = "orange"))  # Adjust colors if needed
 
@@ -246,48 +213,9 @@ ggplot(combined_data, aes(x = year, y = homeless_count, fill = group)) +
 
 
 
-
-
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
-
 # Results
 
 Our results are summarized in @tbl-modelresults.
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-library(rstanarm)
-
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
-```
-
-```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
-#| warning: false
-
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
-```
-
 
 
 
@@ -318,55 +246,7 @@ Weaknesses and next steps should also be included.
 
 ## Posterior predictive check
 
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
 
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
-
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
-
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
-```
-
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
-```
-
-
-
-\newpage
 
 
 # References
