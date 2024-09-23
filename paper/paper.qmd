@@ -19,6 +19,10 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(scales) 
+library(tidyr)
 
 ```
 
@@ -40,23 +44,23 @@ Some of our data is of penguins (@fig-bills), from @palmerpenguins.
 #| fig-cap: Bills of penguins
 #| echo: false
 
-cleaned_shelter_data <- read.csv("/Users/liz/Downloads/starter_folder-main/data/analysis_data/analysis_data.csv")
+cleaned_shelter_data <- read.csv("/Users/liz/Downloads/starter_folder-main/data/analysis_data/shelter_analysis_data.csv")
 
 # Ensure the date column is in the correct format (Month-Year format)
-cleaned_shelter_data$date <- as.Date(paste0("01-", cleaned_shelter_data$date), format="%d-%b-%y")
+cleaned_shelter_data$Date <- as.Date(paste0("01-", cleaned_shelter_data$Date), format="%d-%b-%y")
 
 # Filter to include only the "All Population" group
-total_population_data <- subset(cleaned_shelter_data, group == "All Population")
+total_population_data <- subset(cleaned_shelter_data, Population_Group == "All Population")
 
 # Load ggplot2 for plotting
-ggplot(total_population_data, aes(x = date, y = homeless_count)) +
-  geom_line(color = "blue", linewidth = 1.5) +  
+ggplot(total_population_data, aes(x = Date, y = Homeless_Count)) +
+  geom_line(color = "blue", linewidth = 1.5) +  # Adjust line color and width
   labs(title = "Total Homeless Population Over Time",
        x = "Date",
        y = "Homeless Population Count") +
-  scale_x_date(date_labels = "%Y", date_breaks = "1 year") +  
+  scale_x_date(date_labels = "%Y", date_breaks = "1 year") +  # Show year on x-axis with 1-year intervals
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))  
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))    
 
 ```
 
@@ -65,46 +69,184 @@ Talk more about it.
 And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
 
 ```{r}
+
+# Summarize data for all years (total homeless population by age group)
+total_data <- cleaned_shelter_data %>%
+  summarise(Age_Under_16 = sum(Age_Under_16, na.rm = TRUE),
+            Age_16_24 = sum(Age_16_24, na.rm = TRUE),
+            Age_25_34 = sum(Age_25_34, na.rm = TRUE),
+            Age_35_44 = sum(Age_35_44, na.rm = TRUE),
+            Age_45_54 = sum(Age_45_54, na.rm = TRUE),
+            Age_55_64 = sum(Age_55_64, na.rm = TRUE),
+            Age_65_Over = sum(Age_65_Over, na.rm = TRUE))
+
+# Reshape data for plotting
+total_data_long <- tidyr::pivot_longer(total_data, 
+                                       cols = starts_with("Age"), 
+                                       names_to = "Age_Group", 
+                                       values_to = "Count")
+
+# Calculate percentages
+total_count <- sum(total_data_long$Count)
+total_data_long <- total_data_long %>%
+  mutate(Percent = round(Count / total_count * 100))
+
+# Create a pie chart with percentage labels
+ggplot(total_data_long, aes(x = "", y = Count, fill = Age_Group)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  geom_text(aes(label = paste0(Percent, "%")), 
+            position = position_stack(vjust = 0.5), size = 4) +
+  labs(title = "Age Group Distribution of Total Homeless Population") +
+  theme_void() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set3")  # Use a color palette for clarity
+
+
+```
+
+```{r}
+
+# Read the cleaned data
+cleaned_shelter_data <- read.csv("/Users/liz/Downloads/starter_folder-main/data/analysis_data/shelter_analysis_data.csv")
+
+# Ensure the date column is in the correct format
+cleaned_shelter_data$date <- as.Date(paste0("01-", cleaned_shelter_data$Date), format="%d-%b-%y")
+cleaned_shelter_data$year <- format(cleaned_shelter_data$date, "%Y")  # Extract year as a string
+
+# Summarize data by year for different age groups
+age_data <- cleaned_shelter_data %>%
+  group_by(year) %>%
+  summarise(Age_Under_16 = sum(Age_Under_16, na.rm = TRUE),
+            Age_16_24 = sum(Age_16_24, na.rm = TRUE),
+            Age_25_34 = sum(Age_25_34, na.rm = TRUE),
+            Age_35_44 = sum(Age_35_44, na.rm = TRUE),
+            Age_45_54 = sum(Age_45_54, na.rm = TRUE),
+            Age_55_64 = sum(Age_55_64, na.rm = TRUE),
+            Age_65_Over = sum(Age_65_Over, na.rm = TRUE))
+
+# Reshape data for plotting
+age_data_long <- pivot_longer(age_data, 
+                              cols = starts_with("Age"), 
+                              names_to = "Age_Group", 
+                              values_to = "Count")
+
+# Plot 100% stacked bar chart
+ggplot(age_data_long, aes(x = year, y = Count, fill = Age_Group)) +
+  geom_bar(stat = "identity", position = "fill") +  # Use 'fill' to normalize to 100%
+  scale_y_continuous(labels = percent) +  # Display percentages on y-axis
+  labs(title = "Age Group Proportion Over Time", 
+       x = "Year", y = "Proportion", fill = "Age Group") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set3")  # Use color palette for clarity
+
+```
+
+```{r}
 #| label: fig-planes
 #| fig-cap: Relationship between wing length and width
 #| echo: false
 #| warning: false
 #| message: false
 
-analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
 
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
+# Read the cleaned data
+cleaned_shelter_data <- read.csv("/Users/liz/Downloads/starter_folder-main/data/analysis_data/shelter_analysis_data.csv")
+
+# Ensure the date column is in the correct format
+cleaned_shelter_data$date <- as.Date(paste0("01-", cleaned_shelter_data$Date), format="%d-%b-%y")
+cleaned_shelter_data$year <- as.numeric(format(cleaned_shelter_data$date, "%Y"))  # Extract year as numeric
+
+# Summarize data by year for different genders
+gender_data <- cleaned_shelter_data %>%
+  group_by(year) %>%
+  summarise(Male = sum(Male_Count, na.rm = TRUE),
+            Female = sum(Female_Count, na.rm = TRUE),
+            Non_Binary = sum(Transgender_Non_Binary_Count, na.rm = TRUE))
+
+# Calculate total population for each year and for overall gender proportions
+total_population <- gender_data %>%
+  summarise(Male = sum(Male), Female = sum(Female), Non_Binary = sum(Non_Binary))
+
+# Calculate percentages for each gender over the entire period
+total_population_long <- pivot_longer(total_population, 
+                                      cols = c("Male", "Female", "Non_Binary"), 
+                                      names_to = "Gender", 
+                                      values_to = "Total_Count")
+
+# Calculate proportions
+total_population_long <- total_population_long %>%
+  mutate(Percent = round(Total_Count / sum(Total_Count) * 100, 1))
+
+# Create a string for the percentages to use in the legend
+gender_percentages <- paste0(total_population_long$Gender, " (", total_population_long$Percent, "%)")
+
+# Reshape data for plotting
+gender_data_long <- pivot_longer(gender_data, 
+                                 cols = c("Male", "Female", "Non_Binary"), 
+                                 names_to = "Gender", 
+                                 values_to = "Count")
+
+# Ensure gender order: Non-Binary at the bottom, Female in the middle, Male at the top
+gender_data_long$Gender <- factor(gender_data_long$Gender, levels = c("Non_Binary", "Female", "Male"))
+
+# Plot area chart with percentages in the legend
+ggplot(gender_data_long, aes(x = year, y = Count, fill = Gender)) +
+  geom_area(position = "stack") +
+  labs(title = "Homeless Population by Gender Over Time (Area Chart)", 
+       x = "Year", y = "Homeless Population Count", fill = "Gender") +
+  scale_fill_manual(values = c("Male" = "blue", "Female" = "pink", "Non_Binary" = "purple"),
+                    labels = gender_percentages) +  # Add percentages to the legend
+  theme_minimal()
+
+
 ```
 
 Talk way more about it. 
+```{r}
+
+
+# Summarize data by year for Chronic and All Population
+chronic_data <- cleaned_shelter_data %>%
+  filter(Population_Group == 'Chronic') %>%
+  group_by(year) %>%
+  summarize(homeless_count = sum(Homeless_Count))
+
+all_population_data <- cleaned_shelter_data %>%
+  filter(Population_Group == 'All Population') %>%
+  group_by(year) %>%
+  summarize(homeless_count = sum(Homeless_Count))
+
+# Create Non-Chronic by subtracting Chronic from All Population
+non_chronic_data <- all_population_data
+non_chronic_data$homeless_count <- non_chronic_data$homeless_count - chronic_data$homeless_count
+non_chronic_data$group <- 'Non-Chronic'
+
+# Add Chronic to the dataset
+chronic_data$group <- 'Chronic'
+combined_data <- rbind(chronic_data, non_chronic_data)  # Combine data
+
+# Ensure 'group' is a factor and order it so that Chronic appears at the top
+combined_data$group <- factor(combined_data$group, levels = c("Non-Chronic", "Chronic"))
+
+# Reorder the data frame so that 'Non-Chronic' is plotted first (to appear at the bottom)
+combined_data <- combined_data %>%
+  arrange(group)
+
+# Plot the stacked bar chart with Chronic at the top
+ggplot(combined_data, aes(x = year, y = homeless_count, fill = group)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Chronic vs Non-Chronic Homeless Population by Year", 
+       x = "Year", y = "Homeless Population Count", fill = "Group") +
+  theme_minimal() +
+  scale_fill_manual(values = c("Chronic" = "blue", "Non-Chronic" = "orange"))  # Adjust colors if needed
+
+
+```
 
 
 
-# Model
 
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
-## Model set-up
-
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
-
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
 
 
 ### Model justification
