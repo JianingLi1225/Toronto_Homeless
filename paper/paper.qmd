@@ -135,7 +135,7 @@ total_population <- gender_data %>%
 
 # Calculate percentages for each gender over the entire period
 total_population_long <- pivot_longer(total_population, 
-                                      cols = c("Male", "Female", "Non_Binary"), 
+                                      cols = c("Non_Binary", "Female", "Male"), 
                                       names_to = "Gender", 
                                       values_to = "Total_Count")
 
@@ -152,7 +152,7 @@ gender_data_long <- pivot_longer(gender_data,
                                  names_to = "Gender", 
                                  values_to = "Count")
 
-# Ensure gender order: Non-Binary at the bottom, Female in the middle, Male at the top
+
 gender_data_long$Gender <- factor(gender_data_long$Gender, levels = c("Non_Binary", "Female", "Male"))
 
 # Plot area chart with percentages in the legend
@@ -172,7 +172,7 @@ ggplot(gender_data_long, aes(x = year, y = Count, fill = Gender)) +
 #| echo: false
 #| warning: false
 #| label: fig-chronic-population
-#| fig-cap: "Comparison of Chronic vs Non-Chronic Homeless Population in Toronto (2019-2024)"
+#| fig-cap: "Changes in Chronic and Non-Chronic Homeless Population and Proportion in Toronto (2018-2024)"
 
 # Summarize data by year for Chronic and All Population
 chronic_data <- cleaned_shelter_data %>%
@@ -197,26 +197,25 @@ combined_data <- rbind(chronic_data, non_chronic_data)  # Combine data
 # Ensure 'group' is a factor and order it so that Chronic appears at the top
 combined_data$group <- factor(combined_data$group, levels = c("Non-Chronic", "Chronic"))
 
-# Reorder the data frame so that 'Non-Chronic' is plotted first (to appear at the bottom)
-combined_data <- combined_data %>%
-  arrange(group)
+# Calculate the proportion of Chronic for each year
+proportions <- chronic_data %>%
+  left_join(all_population_data, by = "year", suffix = c("_chronic", "_all")) %>%
+  mutate(percentage = round((homeless_count_chronic / homeless_count_all) * 100, 1))
 
-# Plot the stacked bar chart with Chronic at the top
+# Plot the stacked bar chart with Chronic at the top and add percentages
 ggplot(combined_data, aes(x = year, y = homeless_count, fill = group)) +
   geom_bar(stat = "identity", position = "stack") +
+  geom_text(data = proportions, aes(x = year, y = homeless_count_chronic, label = paste0(percentage, "%")),
+            vjust = 1.5, color = "white", size = 4) +  # Add percentage labels in white color
   labs(x = "Year", y = "Homeless Population Count", fill = "Group") +
   theme_minimal() +
-  scale_fill_manual(values = c("Chronic" = "blue", "Non-Chronic" = "orange"))  # Adjust colors if needed
+  scale_fill_manual(values = c("Chronic" = "blue", "Non-Chronic" = "orange"))
+
 
 
 ```
 
-
-
-# Results
-
-Our results are summarized in @tbl-modelresults.
-
+The @chronic-population displays the changes in the number and proportion of chronic and non-chronic homeless people in Toronto between 2018 and 2024. The number of chronically homeless has been growing over this time, with over 30,000 people in 2018, and by 2023, the number has gone to about 60,000, nearly doubling. the slight drop in numbers in 2024 is due to the fact that the statistics were last updated on September 17, 2024, and it is projected that by the end of the year, the number will have exceeded the 2023 one. Similarly, the percentage of chronically homeless is growing every year, from 29.7% in 2019 to 63.7% in 2024. Note that in 2019 to 2020 and 2023 to 2024, the rate grows faster, by about 10 percent.
 
 
 # Discussion
