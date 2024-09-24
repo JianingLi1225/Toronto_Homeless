@@ -1,16 +1,17 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Trends and Challenges in Toronto’s Homeless Population (2018-2024)"
+subtitle: "A Focus on Demographics and Chronic Homelessness"
 author: 
   - Jianing Li
-thanks: "Code and data are available at: https://github.com/JianingLi1225/Toronto_Homeless.git."
+thanks: "Code and data are available at: https://github.com/JianingLi1225/Toronto_Homeless"
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "This paper explores Toronto’s homeless population from 2018 to 2024, focusing on age, gender, and chronic homelessness trends. The data reveal a decline during the pandemic, followed by a rebound, with males and individuals aged 35-44 making up the majority. The number of chronically homeless also increased significantly. These findings highlight the need for targeted interventions to address chronic homelessness and improve housing policies."
 format: pdf
 number-sections: true
 bibliography: references.bib
 ---
+
 
 ```{r}
 #| include: false
@@ -21,23 +22,28 @@ library(tidyverse)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
-
 ```
 
 
 # Introduction
 
+Homelessness is a growing global concern, especially with rapid urbanization and the housing crisis. As Canada's largest city, Toronto faces a growing homeless population[@toronto2024]. In addition to being a socio-economic issue, homelessness intersects with public health and social justice[@healthhomelessness]. Understanding the trends and composition of the homeless population is critical to effective policymaking. However, existing data often lack detailed categorization, hindering a full understanding of the needs of specific groups. This study seeks to fill this gap.
 
+Using the "Toronto Shelter System Flows" dataset form Toronto Open Data Platform[@torontosheltersystem], this paper examines trends in Toronto's homeless population from 2018 to 2024, focusing on age, gender, and chronic homelessness. Our analysis reveals a decline during the pandemic, followed by a rebound, with males and the 35-44 age group comprising the majority. The number of chronically homeless people continues to grow, providing important insights for policymakers.
+
+In this essay, the (@sec-data-overview) section explains the background and necessity of using this dataset, followed by an explanation of the variables mentioned and the methods used. The (@sec-data-results) section shows the changes in the number of homeless population and the proportion of each age group, gender and chronic homelessness. Graphs and related explanations are provided. The (@sec-discussion) section further analyses the information presented in the graphs.
 
 
 # Data {#sec-data}
 ## Overview {#sec-data-overview}
-The dataset used for this analysis is the “Toronto Shelter System Flows” dataset from the Toronto Open Data Platform [@torontosheltersystem]. It shows the total number of homeless people entering and exiting shelters each month from 2018 to September 2024, as well as the number of different age groups and genders. It also shows the number and proportion of chronic homeless, refugees, youth, single adults, and families in the total homeless population. These data are updated monthly and reflect the latest trends in Toronto's homeless population and shelter system[@torontosheltersystem].
+
+The dataset used for this analysis is the “Toronto Shelter System Flows” dataset from the Toronto Open Data Platform [@torontosheltersystem]. Similar datasets available on the City of Toronto's Open Data Catalogue include Daily Shelter & Overnight Service Occupancy & Capacity and Daily Shelter Occupancy[@opendata]. However, these datasets only provide an overview of shelter usage without categorizing the homeless population using the shelters. As a result, they were not used in this analysis.
+
+This dataset shows the total number of homeless people entering and exiting shelters each month from 2018 to September 2024, as well as the number of different age groups and genders. It also shows the number and proportion of chronic homeless, refugees, youth, single adults, and families in the total homeless population. These data are updated monthly and reflect the latest trends in Toronto's homeless population and shelter system[@torontosheltersystem].
 
 The variables of interest in this analysis vary by age group (Under 16, 16-24, 25-34, 35-44, 45-54, 55-64, 65 and over) and gender (Male, Female, Transgender/Non-Binary), as well as Chronic and All populations. According to @torontosheltersystem, Chronic refers to those who, according to the federal government's definition of chronic homelessness, meet one of the following two criteria: first, stayed in a shelter for at least 180 nights in the past year; and second, stayed in a shelter multiple times in the past three years, totaling at least 546 cumulative nights. All populations refers to the total number of homeless persons covered in the report without any demographic breakdown.
 
-Similar datasets available on the City of Toronto's Open Data Catalogue include Daily Shelter & Overnight Service Occupancy & Capacity and Daily Shelter Occupancy[@opendata]. However, these datasets only provide an overview of shelter usage without categorizing the homeless population using the shelters. As a result, they were not used in this analysis.
-
+All processes are performed through the R language[@citeR]. Data is simulated and tested using the `tidyverse`[@tidyverse] packages , and data is downloaded through the `tidyverse`[@tidyverse] and `opendatatoronto`[@citeopendatatorontoR] packages. The `tidyverse`[@tidyverse] packages are also used for data cleaning, removing unneeded variables and renaming variables. In addition to these parcels mentioned, the `ggplot2`[@ggplot2], `dplyr`[@dplyr] and `tidyr`[@tidyr] packages are used when plotting the graphs.
 
 
 ## Results {#sec-data-results}
@@ -48,13 +54,16 @@ Similar datasets available on the City of Toronto's Open Data Catalogue include 
 #| message: false
 
 # Loading the Cleaned Dataset #
-cleaned_shelter_data <- read.csv("/Users/liz/Downloads/starter_folder-main/data/analysis_data/shelter_analysis_data.csv")
+cleaned_shelter_data <- read_csv(here::here("data", "analysis_data", "shelter_analysis_data.csv"))
+
 
 # Generated by ChatGPT
 cleaned_shelter_data$Date <- as.Date(paste0("01-", cleaned_shelter_data$Date), format="%d-%b-%y")
 cleaned_shelter_data$year <- as.numeric(format(cleaned_shelter_data$Date, "%Y")) 
 
 ```
+
+In this section, the dataset is first loaded in the R programming language[@citeR] and the dates in the data are converted into a suitable format. Then, the change in the total homeless population over time, the percentage of each age group and gender and the change in the number and percentage of chronic homeless population over time were presented in the form of graphs. The `ggplot2` [@ggplot2], `dplyr` [@dplyr] and `tidyr` [@tidyr] packages were utilised in drawing the graphs in the R programming language, and the code was done with the help of Chatgpt, which is also referred to @Rohan.
 
 ```{r}
 #| echo: false
@@ -210,7 +219,8 @@ ggplot(combined_data, aes(x = year, y = homeless_count, fill = group)) +
             vjust = 1.5, color = "white", size = 3) +  # Add percentage labels in white color
   labs(x = "Year", y = "Homeless Population Count", fill = "Group") +
   theme_minimal() +
-  scale_fill_manual(values = c("Chronic" = "blue", "Non-Chronic" = "orange"))
+  scale_fill_manual(values = c("Chronic" = "blue", "Non-Chronic" = "orange")) +
+  scale_x_continuous(breaks = seq(min(combined_data$year), max(combined_data$year), by = 1))  
 
 
 
@@ -235,14 +245,6 @@ Future directions for improvement should include expanding the data scope of the
 
 
 \newpage
-
-\appendix
-
-# Appendix {-}
-
-
-# Additional data details
-
 
 
 
