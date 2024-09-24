@@ -12,18 +12,17 @@
 library(tidyverse)
 
 # Read the data
-cleaned_shelter_data <- read_csv("/Users/liz/Downloads/starter_folder-main/data/raw_data/shelter_raw_data.csv") %>%
+cleaned_shelter_data <- read_csv("/Users/liz/Downloads/starter_folder-main/data/raw_data/raw_data.csv") %>%
   
   # Filter data to keep only 'All Population' and 'Chronic' rows
   filter(population_group %in% c('All Population', 'Chronic')) %>%
   
   # Remove unnecessary columns
   select(-returned_from_housing, -returned_to_shelter, -newly_identified, 
-         -moved_to_housing, -became_inactive) %>%
+         -moved_to_housing, -became_inactive, -population_group_percentage, -X_id) %>%
   
   # Rename columns
   rename(
-    ID = X_id,
     Date = date.mmm.yy.,
     Population_Group = population_group,
     Homeless_Count = actively_homeless,
@@ -36,10 +35,7 @@ cleaned_shelter_data <- read_csv("/Users/liz/Downloads/starter_folder-main/data/
     Age_65_Over = age65over,
     Male_Count = gender_male,
     Female_Count = gender_female,
-    Transgender_Non_Binary_Count = gender_transgender.non.binary_or_two_spirit,
-    Population_Group_Percentage = population_group_percentage)
-
+    Transgender_Non_Binary_Count = gender_transgender.non.binary_or_two_spirit)
 
 #### Save data ####
-write_csv(cleaned_shelter_data, "/Users/liz/Downloads/starter_folder-main/data/analysis_data/shelter_analysis_data.csv")
-
+write_csv(cleaned_shelter_data, "/Users/liz/Downloads/starter_folder-main/data/analysis_data/analysis_data.csv")
