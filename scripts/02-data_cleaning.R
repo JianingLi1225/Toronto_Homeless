@@ -1,11 +1,12 @@
 #### Preamble ####
-# Purpose: Cleans the raw plane data recorded by two observers..... [...UPDATE THIS...]
+# Purpose: Cleans the raw dataset obtained from the 
+#"Toronto Shelter System Flow" dataset in the file "01-download_data.R".
 # Author: Jianing Li
-# Date: 6 April 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Date: September 23, 2024
+# Contact: lijianing.li@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: Run the file "01-download_data.R".
+# Any other information needed? None
 
 #### Workspace setup ####
 library(tidyverse)

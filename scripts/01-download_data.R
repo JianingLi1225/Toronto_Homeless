@@ -1,16 +1,21 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from [...UPDATE THIS...]
+# Purpose: Downloads the data from the opendatatoronto package (Gelfand 2022)
+# and saves the dataset.
 # Author: Jianing Li
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Date: September 23, 2024
+# Contact: lijianing.li@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: Install the opendatatoronto (Gelfand 2022) and
+# tidyverse (Wickham et al. 2019) packages.
+# Any other information needed? None
 
 
 #### Workspace setup ####
+# install.packages("opendatatoronto")
+# install.packages("tidyverse")
 library(opendatatoronto)
 library(tidyverse)
+
 packages <- list_packages(500)
 packages
 
@@ -27,5 +32,5 @@ shelter_system_statistics <- shelter_system_resources[2, ] %>%
 shelter_system_statistics
 
 #### Save data ####
-# change the_raw_data to whatever name you assigned when you downloaded it.
+
 write_csv(shelter_system_statistics, "/Users/liz/Downloads/starter_folder-main/data/raw_data/raw_data.csv")

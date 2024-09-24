@@ -3,8 +3,7 @@ title: "My title"
 subtitle: "My subtitle if needed"
 author: 
   - Jianing Li
-  - Another author
-thanks: "Code and data are available at: LINK."
+thanks: "Code and data are available at: https://github.com/JianingLi1225/Toronto_Homeless.git."
 date: today
 date-format: long
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
@@ -17,7 +16,7 @@ bibliography: references.bib
 #| include: false
 #| warning: false
 #| message: false
-
+#### Workspace setup ####
 library(tidyverse)
 library(ggplot2)
 library(dplyr)
@@ -28,9 +27,6 @@ library(tidyr)
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
-
-The remainder of this paper is structured as follows. @sec-data....
 
 
 
@@ -223,7 +219,7 @@ ggplot(combined_data, aes(x = year, y = homeless_count, fill = group)) +
 The @fig-chronic-population displays the changes in the number and proportion of chronic and non-chronic homeless people in Toronto between 2018 and 2024. The number of chronically homeless has been growing over this time, with over 30,000 people in 2018, and by 2023, the number has gone to about 60,000, nearly doubling. the slight drop in numbers in 2024 is due to the fact that the statistics were last updated on September 17, 2024, and it is projected that by the end of the year, the number will have exceeded the 2023 one. Similarly, the percentage of chronically homeless is growing every year, from 29.7% in 2019 to 63.7% in 2024. Note that in 2019 to 2020 and 2023 to 2024, the rate grows faster, by about 10 percent.
 
 
-# Discussion
+# Discussion {#sec-discussion}
 
 ## Overview of Homeless Trends (2018-2024)
 In @sec-data-results，trends in Toronto's homeless population from 2018 to 2024 are presented, focusing on key factors such as age, gender, and chronic versus non-chronic conditions. The homeless population fluctuates significantly, being significantly impacted in specific years such as 2020 and 2021[@fig-total-population], with males and the 35-44 age group making up the majority of the homeless population[@fig-age-distribution,@fig-gender-distribution], and chronic homelessness showing an increasing trend[@fig-chronic-population].
@@ -233,8 +229,10 @@ The homeless population declined significantly in 2020 and 2021, likely due to C
 An analysis of age, gender, and chronic homelessness provides key insights into Toronto's homeless population. Homelessness is concentrated among working-age adults, especially those aged 35-44 and 25-34, likely due to challenges with employment or housing stability. In terms of gender, males consistently make up the majority, while non-binary individuals account for only 1.4%. This suggests shelters should consider different designs for men and women, while also addressing the needs of non-binary individuals, despite their smaller numbers. The rise in chronic homelessness suggests that existing measures are not enough to help people exit homelessness permanently.
 
 ## Weaknesses and next steps
+A limitation of this analysis is that the data analyzed does not reflect the entire Toronto homeless population. The database used only includes people who use City of Toronto-funded overnight shelter services and fails to reflect people who spend the night outdoors or use other homeless services. According to the most recent Street Needs Assessment, approximately 18% of the homeless population is not included in the data[@torontosheltersystem].
 
-Weaknesses and next steps should also be included.
+Future directions for improvement should include expanding the data scope of the analysis to include people who spend the night outdoors and use shelters that are not funded by the Government of Toronto, in order to provide a more complete picture of homelessness in Toronto. This will help fill data gaps and support more effective policy decisions.
+
 
 \newpage
 
@@ -245,8 +243,6 @@ Weaknesses and next steps should also be included.
 
 # Additional data details
 
-
-## Posterior predictive check
 
 
 
