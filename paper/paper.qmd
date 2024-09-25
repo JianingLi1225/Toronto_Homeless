@@ -9,6 +9,7 @@ date-format: long
 abstract: "This paper explores Toronto’s homeless population from 2018 to 2024, focusing on age, gender, and chronic homelessness trends. The data reveal a decline during the pandemic, followed by a rebound, with males and individuals aged 35-44 making up the majority. The number of chronically homeless also increased significantly. These findings highlight the need for targeted interventions to address chronic homelessness and improve housing policies."
 format: pdf
 number-sections: true
+toc: true
 bibliography: references.bib
 ---
 
@@ -31,7 +32,7 @@ Homelessness is a growing global concern, especially with rapid urbanization and
 
 Using the "Toronto Shelter System Flows" dataset form Toronto Open Data Platform[@torontosheltersystem], this paper examines trends in Toronto's homeless population from 2018 to 2024, focusing on age, gender, and chronic homelessness. Our analysis reveals a decline during the pandemic, followed by a rebound, with males and the 35-44 age group comprising the majority. The number of chronically homeless people continues to grow, providing important insights for policymakers.
 
-In this essay, the (@sec-data-overview) section explains the background and necessity of using this dataset, followed by an explanation of the variables mentioned and the methods used. The (@sec-data-results) section shows the changes in the number of homeless population and the proportion of each age group, gender and chronic homelessness. Graphs and related explanations are provided. The (@sec-discussion) section further analyses the information presented in the graphs.
+In this essay, @sec-data-overview explains the background and necessity of using this dataset, followed by an explanation of the variables mentioned and the methods used. @sec-data-results shows the changes in the number of homeless population and the proportion of each age group, gender and chronic homelessness. Graphs and related explanations are provided. @sec-discussion further analyses the information presented in the graphs.
 
 
 # Data {#sec-data}
@@ -74,7 +75,7 @@ In this section, the dataset is first loaded in the R programming language[@cite
 # Filter to include only the "All Population" group
 total_population_data <- subset(cleaned_shelter_data, Population_Group == "All Population")
 
-# This code is based on knowledge from Alexander (2023).
+# This code draws on concepts from Alexander (2023)
 # Load ggplot2 for plotting
 ggplot(total_population_data, aes(x = Date, y = Homeless_Count)) +
   geom_line(color = "blue", linewidth = 1.5) +  
@@ -119,7 +120,7 @@ total_data_long <- total_data_long %>%
   mutate(Percent = round(Count / total_count * 100))
 
 # Create a pie chart with percentage labels
-# This code is based on knowledge from Alexander (2023) and further refined using the RStudio Help documentation.
+# This code draws on concepts from Alexander (2023)
 ggplot(total_data_long, aes(x = "", y = Count, fill = Age_Group)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar("y") +
@@ -145,17 +146,18 @@ gender_data <- cleaned_shelter_data %>%
   group_by(year) %>%
   summarise(Male = sum(Male_Count, na.rm = TRUE),
             Female = sum(Female_Count, na.rm = TRUE),
-            Other = sum(Transgender_Non_Binary_Count, na.rm = TRUE))
+            Transgender_Non_Binary = sum(Transgender_Non_Binary_Count, na.rm = TRUE))  # Change 'Other' to 'Transgender/Non-binary'
 
 # Calculate total population for each gender over the entire period
 total_population <- gender_data %>%
-  summarise(Male = sum(Male), Female = sum(Female), Other = sum(Other))
+  summarise(Male = sum(Male), Female = sum(Female), Transgender_Non_Binary = sum(Transgender_Non_Binary))  # Adjust for renamed column
 
-# Reshape data for plotting
+# Reshape data for plotting and update Transgender_Non_Binary to Transgender/Non-binary
 total_population_long <- pivot_longer(total_population, 
-                                      cols = c("Other", "Female", "Male"), 
+                                      cols = c("Transgender_Non_Binary", "Female", "Male"), 
                                       names_to = "Gender", 
-                                      values_to = "Total_Count")
+                                      values_to = "Total_Count") %>%
+  mutate(Gender = recode(Gender, "Transgender_Non_Binary" = "Transgender/Non-binary"))  # Replace underscore with /
 
 # Calculate percentages for each gender
 total_population_long <- total_population_long %>%
@@ -170,9 +172,7 @@ ggplot(total_population_long, aes(x = "", y = Total_Count, fill = Gender)) +
             position = position_stack(vjust = 0.5), size = 4, fontface = "bold", color = "gray30") +  
   theme_void() +
   theme(legend.position = "right") +
-  scale_fill_manual(values = c("Male" = "#7FB3D5", "Female" = "#F5B7B1", "Other" = "#D2B4DE"))  
-
-
+  scale_fill_manual(values = c("Male" = "#7FB3D5", "Female" = "#F5B7B1", "Transgender/Non-binary" = "#D2B4DE"))  
 ```
 
 @fig-gender-distribution presents the gender distribution of Toronto's homeless population from 2018 to 2024. During this period, males have consistently made up the largest proportion, accounting for approximately 61.8% of the total homeless population. Females make up about 36.8%, while non-binary individuals make up about 1.4%. 
@@ -233,8 +233,10 @@ The @fig-chronic-population displays the changes in the number and proportion of
 
 ## Overview of Homeless Trends (2018-2024)
 In @sec-data-results，trends in Toronto's homeless population from 2018 to 2024 are presented, focusing on key factors such as age, gender, and chronic versus non-chronic conditions. The homeless population fluctuates significantly, being significantly impacted in specific years such as 2020 and 2021[@fig-total-population], with males and the 35-44 age group making up the majority of the homeless population[@fig-age-distribution,@fig-gender-distribution], and chronic homelessness showing an increasing trend[@fig-chronic-population].
+
 ## Impact of COVID-19 on Homelessness
 The homeless population declined significantly in 2020 and 2021, likely due to COVID-19. To meet social distancing requirements, the Toronto government reduced shelter capacity and opened temporary shelters, including additional spaces in hotels and motels[@may2023scan]. These actions may explain the drop during these years. However, the rebound in homelessness afterward suggests that issues like housing affordability and lack of social support remain unresolved, highlighting the need for sustainable long-term solutions.
+
 ## Demographic and Chronic Homelessness Insights
 An analysis of age, gender, and chronic homelessness provides key insights into Toronto's homeless population. Homelessness is concentrated among working-age adults, especially those aged 35-44 and 25-34, likely due to challenges with employment or housing stability. In terms of gender, males consistently make up the majority, while non-binary individuals account for only 1.4%. This suggests shelters should consider different designs for men and women, while also addressing the needs of non-binary individuals, despite their smaller numbers. The rise in chronic homelessness suggests that existing measures are not enough to help people exit homelessness permanently.
 
