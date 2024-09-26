@@ -1,8 +1,7 @@
-# Trends and Challenges in Toronto’s Homeless Population (2018-2024):Focus on Demographics and Chronic Homelessness
-
+# Trends and Challenges in Toronto’s Homeless Population (2018-2024): Middle-Aged Males Leading the Homeless Population with Continued Growth in Chronic Homelessness
 ## Overview
 
-This paper explores Toronto’s homeless population from 2018 to 2024, focusing on age, gender, and chronic homelessness trends. The data reveal a decline during the pandemic, followed by a rebound, with males and individuals aged 35-44 making up the majority. The number of chronically homeless also increased significantly. These findings highlight the need for targeted interventions to address chronic homelessness and improve housing policies.
+Toronto’s homeless population experienced changes between 2018 and 2024, with key trends in age, gender, and chronic homelessness. Using data from the Toronto Shelter System, this paper examines these trends and the effects of the COVID-19 pandemic. The results show that males aged 35-44 are the largest demographic, and the number of chronically homeless individuals has increased. Understanding these dynamics is essential for developing more effective policies to address homelessness and improve long-term housing stability.
 
 ## File Structure
 

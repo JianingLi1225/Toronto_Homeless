@@ -12,7 +12,7 @@
 library(tidyverse)
 
 # Read the data
-cleaned_shelter_data <- read_csv("/Users/liz/Downloads/starter_folder-main/data/raw_data/raw_data.csv") %>%
+cleaned_shelter_data <- read_csv(here::here("data", "raw_data", "raw_data.csv"))
   
   # Filter data to keep only 'All Population' and 'Chronic' rows
   filter(population_group %in% c('All Population', 'Chronic')) %>%
@@ -38,4 +38,5 @@ cleaned_shelter_data <- read_csv("/Users/liz/Downloads/starter_folder-main/data/
     Transgender_Non_Binary_Count = gender_transgender.non.binary_or_two_spirit)
 
 #### Save data ####
-write_csv(cleaned_shelter_data, "/Users/liz/Downloads/starter_folder-main/data/analysis_data/analysis_data.csv")
+  write_csv(cleaned_shelter_data, here::here("data", "analysis_data", "analysis_data.csv"))
+  

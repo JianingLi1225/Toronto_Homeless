@@ -33,4 +33,5 @@ shelter_system_statistics
 
 #### Save data ####
 
-write_csv(shelter_system_statistics, "/Users/liz/Downloads/starter_folder-main/data/raw_data/raw_data.csv")
+write_csv(shelter_system_statistics, here::here("data", "raw_data", "raw_data.csv"))
+
