@@ -12,7 +12,8 @@
 library(tidyverse)
 
 # Read the data
-cleaned_shelter_data <- read_csv(here::here("data", "raw_data", "raw_data.csv"))
+cleaned_shelter_data <- read_csv(here::here("data", "raw_data", "raw_data.csv")) %>%
+  
   
   # Filter data to keep only 'All Population' and 'Chronic' rows
   filter(population_group %in% c('All Population', 'Chronic')) %>%
