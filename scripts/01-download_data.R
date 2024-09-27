@@ -34,4 +34,3 @@ shelter_system_statistics
 #### Save data ####
 
 write_csv(shelter_system_statistics, here::here("data", "raw_data", "raw_data.csv"))
-

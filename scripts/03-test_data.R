@@ -94,5 +94,3 @@ if (nrow(duplicates) == 0) {
 } else {
   print("There are duplicate rows in the dataset.")
 }
-
-

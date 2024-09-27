@@ -67,6 +67,3 @@ simulated_data <- data.frame(
 
 # Save the simulated data to the specified path
 write_csv(simulated_data, here::here("data", "raw_data", "simulated_shelter_data.csv"))
-
-
-
