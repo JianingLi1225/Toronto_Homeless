@@ -29,7 +29,7 @@ library(styler)
 ```
 
 
-# Introduction
+# Introduction {#sec-introduction}
 
 Homelessness is a growing global concern, especially with rapid urbanization and the housing crisis. As Canada's largest city, Toronto faces a growing homeless population [@toronto2024]. In addition to being a socio-economic issue, homelessness intersects with public health and social justice [@healthhomelessness].  However, the existing data often lacks detailed classification, preventing a comprehensive understanding of the needs of specific groups. The present study seeks to fill this gap by analyzing the share and trends of different groups in the homeless population.
 
@@ -338,13 +338,15 @@ ggplot(combined_data, aes(x = year, y = homeless_count, fill = group)) +
 
 # Discussion {#sec-discussion}
 
-## Overview of Homeless Trends (2018-2024)
+## Overview of Homeless Trends (2018-2024) {#sec-discussion-overview}
+
 @sec-data-results presents trends in Toronto's homeless population from 2018 to 2024, focusing on key factors such as age, gender, and chronic versus non-chronic conditions. The homeless population fluctuates greatly, with notable impacts in years like 2020 and 2021 (@fig-total-population), with males and the 35-44 age group making up the majority of the homeless population (@fig-age-distribution-sidebyside, @fig-gender-distribution-sidebyside), and chronic homelessness showing an increasing trend (@fig-chronic-population).
 
-## Impact of COVID-19 on Homelessness
+## Impact of COVID-19 on Homelessness {#sec-discussion-COVID}
+
 The homeless population declined in 2020 and 2021, likely due to COVID-19. To meet social distancing requirements, the Toronto government reduced shelter capacity and opened temporary shelters, including additional spaces in hotels and motels [@may2023scan]. These actions may explain the drop during these years. However, the rebound in homelessness afterward suggests that issues like housing affordability and lack of social support remain unresolved, highlighting the need for sustainable long-term solutions.
 
-## Demographic and Chronic Homelessness Insights
+## Demographic and Chronic Homelessness Insights {#sec-discussion-insight}
 
 Analyzing age, gender and chronic homelessness provides insight into Toronto's homeless population. Homelessness is concentrated among working-age adults, particularly the 35-44 and 25-34-year-olds, which may be due to challenges they face with employment or housing stability. During the pandemic, there was a sharp fall in homelessness among the under-16s group, which may reflect government support for young people during the pandemic. However, subsequent increases highlight the need for sustained policies.
 
@@ -352,16 +354,19 @@ In terms of gender, males remain in the majority (61.8\%) and only 1.4\% are tra
 
 The increase in the number of chronically homeless people is largely due to the continued rise in rents and house prices, which are far beyond the ability of many low-income residents to pay, leaving them without the means to maintain stable accommodation [@whitzman2023human]. The rise in the proportion of people who are chronically homeless means that current interventions are not sufficient to help people out of homelessness and that the underlying issues need to be further addressed.
 
-## Weaknesses and next steps
-A limitation of this analysis is that the data analyzed does not reflect the entire Toronto homeless population. The database used only includes people who use City of Toronto-funded overnight shelter services and fails to reflect people who spend the night outdoors or use other homeless services. According to the most recent Street Needs Assessment, approximately 18% of the homeless population is not included in the data [@torontosheltersystem].
+## Weaknesses and next steps {#sec-discussion-weakness}
 
-Future directions for improvement should include expanding the data scope of the analysis to include people who spend the night outdoors and use shelters that are not funded by the Government of Toronto, in order to provide a more complete picture of homelessness in Toronto. This will help fill data gaps and support more effective policy decisions.
+A limitation of this analysis is that the dataset used does not fully capture the overall status of homelessness in Toronto. It only includes individuals who utilize City of Toronto-funded overnight shelter services, excluding those who spend the night outdoors or use other homeless services. These excluded groups represent approximately 18\% of the homeless population [@torontosheltersystem]. Future studies could aim to collect more comprehensive data by including these populations.
+
+Additionally, the variables analyzed in this article were limited to basic demographic information such as gender, age, and chronic homelessness status. Future analyses could incorporate more complex variables, such as the influence of different socioeconomic factors (e.g., income, education level, employment status) on homelessness. By examining interactions between these variables, it may be possible to uncover deeper insights into the root causes of homelessness.
 
 
 \newpage
 
 
 
-# References
+# References {#sec-references}
+
+
 
 
